@@ -1,4 +1,4 @@
-from func import *
+from adressbook import *
 
 
 COMMANDS = {salute: ['hello'], add_contact: ['add '], change_contact: ['change '], help_me: ['?', 'help'],
