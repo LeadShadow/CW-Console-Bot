@@ -18,7 +18,7 @@ def command_parser(user_command: str) -> (str, list):
         return unknown_command, []
 
 
-def main():
+def start_ab():
     contacts = AddressBook(filename='contacts.dat')
     while True:
         user_command = input('Enter command >>> ')
@@ -29,4 +29,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # if user_input == "adressbook": -> i тд тп
+    start_ab()
