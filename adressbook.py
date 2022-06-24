@@ -5,8 +5,9 @@ from collections import UserDict
 from datetime import date
 import colorama
 import re
+from main import command_parser
 
-N = 3   # кількість записів для представлення телефонної книги
+N = 3  # кількість записів для представлення телефонної книги
 
 
 class Field:
@@ -128,7 +129,7 @@ class Record:
     def __str__(self) -> str:
         return f' User \033[35m{self.name.value:20}\033[0m - Birthday {self.birthday}\n' \
                f'     Phones: {", ".join([phone.value for phone in self.phone_list])}\n' \
-               f' Email: {self.email}\n'\
+               f' Email: {self.email}\n' \
                f' Address: {self.address}'
 
     def add_phone(self, phone: Phone) -> None:
@@ -319,6 +320,7 @@ def search(contacts, *args):
         return substring.lower() in record.name.value.lower() or \
                any(substring in phone.value for phone in record.phone_list) or \
                (record.birthday.value is not None and substring in record.birthday.value.strftime('%d.%m.%Y'))
+
     substring = args[0]
     result = f'List of users with \'{substring.lower()}\' in data:\n'
     print_list = contacts.iterator(func_sub)
@@ -388,3 +390,20 @@ def help_me(*args):
     days to birthday name - show how many days to the user's birthday;
     show birthday days N - show the user's birthday in the next N days;
     good bye or close or exit or . - exit the program"""
+
+
+COMMANDS_A = {salute: ['hello'], add_contact: ['add '], change_contact: ['change '], help_me: ['?', 'help'],
+              show_all: {'show all'}, goodbye: ['good bye', 'close', 'exit', '.'], del_phone: ['del '],
+              add_birthday: ['birthday'], days_to_user_birthday: ['days to birthday '],
+              show_birthday: ['show birthday days '], show_phone: ['show '], search: ['find ', 'search '],
+              del_user: ['delete '], clear_all: ['clear'], add_email: ['email '], add_address: ['address']}
+
+
+def start_ab():
+    contacts = AddressBook(filename='contacts.dat')
+    while True:
+        user_command = input('Enter command >>> ')
+        command, data = command_parser(user_command, COMMANDS_A)
+        print(command(contacts, *data), '\n')
+        if command is goodbye:
+            break
