@@ -1,14 +1,9 @@
 from adressbook import *
+from notebook import *
+from file_parser import *
 
 
-COMMANDS = {salute: ['hello'], add_contact: ['add '], change_contact: ['change '], help_me: ['?', 'help'],
-            show_all: ['show all'], goodbye: ['good bye', 'close', 'exit', '.'], del_phone: ['del '],
-            add_birthday: ['birthday'], days_to_user_birthday: ['days to birthday '],
-            show_birthday: ['show birthday days '], show_phone: ['show '], search: ['find ', 'search '],
-            del_user: ['delete '], clear_all: ['clear'], add_email: ['email '], add_address: ['address']}
-
-
-def command_parser(user_command: str) -> (str, list):
+def command_parser(user_command: str, COMMANDS: dict) -> (str, list):
     for key, list_value in COMMANDS.items():
         for value in list_value:
             if user_command.lower().startswith(value):
@@ -18,15 +13,19 @@ def command_parser(user_command: str) -> (str, list):
         return unknown_command, []
 
 
-def main():
-    contacts = AddressBook(filename='contacts.dat')
+if __name__ == '__main__':
     while True:
-        user_command = input('Enter command >>> ')
-        command, data = command_parser(user_command)
-        print(command(contacts, *data), '\n')
-        if command is goodbye:
+        print("What would you like to start with?\n"
+          "{:^10} {:^10} {:^10} {:^10}".format("addressbook", "notebook", "file parser", "quit"))
+        user_input = input('Enter command >>> ')
+        if user_input == "addressbook":
+            start_ab()
+        if user_input == "notebook":
+            start_nb()
+        if user_input == "file parser":
+            start_fp()
+        if user_input == "quit":
+            print('Good bye!')
             break
 
 
-if __name__ == '__main__':
-    main()
