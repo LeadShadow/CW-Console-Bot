@@ -4,7 +4,7 @@ from pathlib import Path
 from collections import UserDict
 from datetime import date
 import colorama
-
+import re
 
 N = 3   # кількість записів для представлення телефонної книги
 
@@ -53,7 +53,7 @@ class Phone(Field):
             if 10 <= len(phone) <= 14 and not phone.startswith('0') and not phone.startswith('380'):
                 result = '+' + phone
         if result is None:
-            raise ValueError(f'Невірний тип значення {value}')
+            raise ValueError(f'Неправильний тип значення {value}')
         self.__value = result
 
 
@@ -82,15 +82,57 @@ class Birthday(Field):
                     raise DateIsNotValid
 
 
+class Address(Field):
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value: str):
+        self.__value = value
+
+
+class Email(Field):
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value: str):
+        def is_email_valid(email_address):
+            if email_address.endswith("@gmail.com") or email_address.endswith("@ukr.net"):
+                return True
+            else:
+                return False
+
+        result = None
+        get_emails = re.findall(r'\b[a-zA-Z][\w\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}', value)
+        if get_emails:
+            for i in get_emails:
+                if is_email_valid(i):
+                    result = i
+                    print(result)
+        if result is None:
+            raise AttributeError(f"Неправильний тип значення {value}")
+        self.__value = result
+
+
+# e = Email("olexandr.samus.2004@gmai.com")
+
+
 class Record:
-    def __init__(self, name: Name, phones=[], birthday=None) -> None:
+    def __init__(self, name: Name, phones=[], birthday=None, email=None, address=None) -> None:
         self.name = name
         self.phone_list = phones
         self.birthday = birthday
+        self.address = address
+        self.email = email
 
     def __str__(self) -> str:
         return f' User \033[35m{self.name.value:20}\033[0m - Birthday {self.birthday}\n' \
-               f'     Phones: {", ".join([phone.value for phone in self.phone_list])}'
+               f'     Phones: {", ".join([phone.value for phone in self.phone_list])}\n' \
+               f' Email: {self.email}\n'\
+               f' Address: {self.address}'
 
     def add_phone(self, phone: Phone) -> None:
         self.phone_list.append(phone)
@@ -148,6 +190,10 @@ class DateIsNotValid(Exception):
     """You cannot add an invalid date"""
 
 
+class EmailIsNotValid(Exception):
+    """Email is not valid, try again"""
+
+
 class InputError:
     def __init__(self, func) -> None:
         self.func = func
@@ -165,6 +211,8 @@ class InputError:
             return 'Error! You cannot add an existing phone number to a user'
         except DateIsNotValid:
             return 'Error! Date is not valid'
+        except AttributeError:
+            return 'Error! Email is not valid'
 
 
 def salute(*args):
@@ -175,18 +223,30 @@ def salute(*args):
 def add_contact(contacts, *args):
     name = Name(args[0])
     phone = Phone(args[1])
+    birthday = None
+    email = None
+    address = None
     if name.value in contacts:
         if phone in contacts[name.value].phone_list:
             raise PhoneUserAlreadyExists
         else:
             contacts[name.value].add_phone(phone)
             return f'Add phone {phone} to user {name}'
+
     else:
         if len(args) > 2:
             birthday = Birthday(args[2])
-        else:
+        if len(args) > 3:
+            email = Email(args[3])
+        if len(args) > 4:
+            address = Address(args[4])
+        if len(args) < 2:
             birthday = Birthday(None)
-        contacts[name.value] = Record(name, [phone], birthday)
+        if len(args) < 3:
+            email = Email(None)
+        if len(args) < 4:
+            address = Address(None)
+        contacts[name.value] = Record(name, [phone], birthday, email, address)
         return f'Add user {name} with phone number {phone}'
 
 
@@ -290,6 +350,29 @@ def clear_all(contacts, *args):
         return 'Removal canceled'
 
 
+@InputError
+def add_email(contacts, *args):
+    name, email = args[0], args[1]
+    contacts[name].email = Email(email)
+    return f'Add/modify email {contacts[name].email} to user {name}'
+
+
+@InputError
+def add_address(contacts, *args):
+    if len(args) > 2:
+        name, address = args[0], args[1] + " " + args[2]
+        contacts[name].address = Address(address)
+        return f'Add/modify address {contacts[name].address} to user {name}'
+    if len(args) > 3:
+        name, address = args[0], args[1] + " " + args[2] + " " + args[3]
+        contacts[name].address = Address(address)
+        return f'Add/modify address {contacts[name].address} to user {name}'
+    if len(args) > 4:
+        name, address = args[0], args[1] + " " + args[2] + " " + args[3] + " " + args[4]
+        contacts[name].address = Address(address)
+        return f'Add/modify address {contacts[name].address} to user {name}'
+
+
 def help_me(*args):
     return """Command format:
     help or ? - this help;
@@ -300,6 +383,8 @@ def help_me(*args):
     delete name - delete the user;
     clear - delete all users;
     birthday name birthday - add/modify the user's birthday;
+    email name email - add/modify the user's email;
+    address name address - add/modify the user's address;
     show name - show the user's data;
     show all - show data of all users;
     find or search sub - show data of all users with sub in name, phones or birthday;

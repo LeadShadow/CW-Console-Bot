@@ -5,7 +5,7 @@ COMMANDS = {salute: ['hello'], add_contact: ['add '], change_contact: ['change '
             show_all: ['show all'], goodbye: ['good bye', 'close', 'exit', '.'], del_phone: ['del '],
             add_birthday: ['birthday'], days_to_user_birthday: ['days to birthday '],
             show_birthday: ['show birthday days '], show_phone: ['show '], search: ['find ', 'search '],
-            del_user: ['delete '], clear_all: ['clear']}
+            del_user: ['delete '], clear_all: ['clear'], add_email: ['email '], add_address: ['address']}
 
 
 def command_parser(user_command: str) -> (str, list):
