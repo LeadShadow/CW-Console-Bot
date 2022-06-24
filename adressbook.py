@@ -117,9 +117,6 @@ class Email(Field):
         self.__value = result
 
 
-# e = Email("olexandr.samus.2004@gmai.com")
-
-
 class Record:
     def __init__(self, name: Name, phones=[], birthday=None, email=None, address=None) -> None:
         self.name = name
