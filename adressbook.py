@@ -5,7 +5,7 @@ from collections import UserDict
 from datetime import date
 import colorama
 import re
-from main import command_parser
+from command_parser import command_parser
 
 N = 3  # кількість записів для представлення телефонної книги
 
@@ -311,10 +311,6 @@ def goodbye(contacts, *args):
     return 'Good bye!'
 
 
-def unknown_command(*args):
-    return 'Unknown command! Enter again!'
-
-
 def search(contacts, *args):
     def func_sub(record):
         return substring.lower() in record.name.value.lower() or \
@@ -401,6 +397,7 @@ COMMANDS_A = {salute: ['hello'], add_contact: ['add '], change_contact: ['change
 
 def start_ab():
     contacts = AddressBook(filename='contacts.dat')
+    print(help_me())
     while True:
         user_command = input('Enter command >>> ')
         command, data = command_parser(user_command, COMMANDS_A)
