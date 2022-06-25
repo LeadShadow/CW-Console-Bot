@@ -135,15 +135,9 @@ class Note:
             self.result = self.text
             return self.result
 
-    def beauty_tags(self, value):
-        self.result_tags = ''
-        for i in value:
-            self.result_tags += i + ' '
-        return self.result_tags
-
     def __str__(self):
         return f"ID: {self.id:^10} {' '*17} Date: {self.exec_date}\n" \
-               f"Tags: {self.beauty_tags(self.tags)}\n" \
+               f"Tags: {', '.join(self.tags)}\n" \
                f"{self.hyphenation_string()}"
 
 
