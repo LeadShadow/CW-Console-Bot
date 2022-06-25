@@ -119,26 +119,36 @@ class Note:
         self.exec_date = None
         self.tags = []
         self.text = text
-        self.result_list = None
-        self.result = ''
-        self.result_tags = ''
 
-    def hyphenation_string(self):
-        self.result_list = re.findall(r'.{49}', self.text)
-        if self.result_list:
-            self.result = ''
-            for i in self.result_list:
-                self.result += i + "-" + '\n'
-            self.result = self.result + self.text[len(self.result)-2:]
-            return self.result
-        else:
-            self.result = self.text
-            return self.result
+    # def hyphenation_string(self):
+    #     self.result_list = re.findall(r'.{49}', self.text)
+    #     if self.result_list:
+    #         self.result = ''
+    #         for i in self.result_list:
+    #             self.result += i + "-" + '\n'
+    #         self.result = self.result + self.text[len(self.result)-2:]
+    #         return self.result
+    #     else:
+    #         self.result = self.text
+    #         return self.result
 
     def __str__(self):
-        return f"ID: {self.id:^10} {' '*17} Date: {self.exec_date}\n" \
+        def hyphenation_string(text) -> str:
+            result_list = re.findall(r'.{50}', text)
+            if result_list:
+                result = ''
+                for i in result_list:
+                    if i[49] == " ":
+                        result += i + '\n'
+                    result += i + "-" + '\n'
+                result = result + text[len(result) - 2:]
+                return result
+            else:
+                return text
+
+        return f"ID: {self.id:^10} {' ' * 17} Date: {self.exec_date}\n" \
                f"Tags: {', '.join(self.tags)}\n" \
-               f"{self.hyphenation_string()}"
+               f"{hyphenation_string(self.text)}"
 
 
 class NoteBook(UserDict):
