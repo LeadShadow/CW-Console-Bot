@@ -1,6 +1,7 @@
 """Модуль для роботи з нотатками"""
 import datetime
 import pickle
+import re
 from collections import UserDict
 from datetime import date
 from pathlib import Path
@@ -80,13 +81,16 @@ class ExecDate(Field):
 
 
 class Tag(Field):
-    def __init__(self, value: str) -> None:
-        super().__init__(value)
-        self.__value = None
-        self.value = value
-
     def __str__(self) -> str:
         return f'{self.value}'
+
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value: str):
+        self.__value = value
 
 
 class Text(Field):
@@ -113,13 +117,39 @@ class Note:
         self.id = NoteBook.id_counter
         self.is_done = False
         self.exec_date = None
-        self.tags = None
+        self.tags = []
         self.text = text
 
+    # def hyphenation_string(self):
+    #     self.result_list = re.findall(r'.{49}', self.text)
+    #     if self.result_list:
+    #         self.result = ''
+    #         for i in self.result_list:
+    #             self.result += i + "-" + '\n'
+    #         self.result = self.result + self.text[len(self.result)-2:]
+    #         return self.result
+    #     else:
+    #         self.result = self.text
+    #         return self.result
+
     def __str__(self):
-        return f"ID: {self.id:^10} {' '*17} Date: {self.exec_date}\n" \
-               f"Tags: {self.tags}\n" \
-               f"{self.text}"
+        def hyphenation_string(text) -> str:
+            result_list = re.findall(r'.{50}', text)
+            if result_list:
+                result = ''
+                for i in result_list:
+                    if i[49] == " ":
+                        result += i + '\n'
+                    else:
+                        result += i + "-" + '\n'
+                result = result + text[len(result) - 2:]
+                return result
+            else:
+                return text
+
+        return f"ID: {self.id:^10} {' ' * 17} Date: {self.exec_date}\n" \
+               f"Tags: {', '.join(self.tags)}\n" \
+               f"{hyphenation_string(self.text)}"
 
 
 class NoteBook(UserDict):
@@ -276,6 +306,19 @@ def return_note(notebook, *args):
         return f'Note ID:{id_note} is not done'
 
 
+@InputError
+def add_tag(notebook, *args):
+    id_note = int(args[0])
+    note_text = ' '.join(args[1:])
+    if not notebook[id_note].tags:
+        notebook[id_note].tags.append(note_text)
+    else:
+        notebook[id_note].tags.append(note_text)
+        notebook[id_note].tags.sort()
+        # notebook[id_note].tags.sort(key=lambda x: x[0])
+    return f'Tag {note_text} added to note ID:{id_note}'
+
+
 def goodbye(notebook, *args):
     notebook.save()
     return 'Good bye!'
@@ -293,6 +336,7 @@ def help_me(*args):
     change note <id> <text> - change note;
     delete note <id> - delete note;
     add date id <date> - add/change date;
+    add tag id <tag> - add tag;
     done id - mark note as done;
     return id - mark note as not done;
     show all - show all notes;
@@ -305,7 +349,7 @@ def help_me(*args):
 COMMANDS = {help_me: ['?', 'help'], goodbye: ['good bye', 'close', 'exit', '.'], add_note: ['add note '],
             add_date: ['add date '], show_all: ['show all'], show_archiv: ['show archived'],
             change_note: ['change note '], del_note: ['delete note '], find_note: ['find note '],
-            show_date: ['show date '], done_note: ['done '], return_note: ['return ']}
+            show_date: ['show date '], done_note: ['done '], return_note: ['return '], add_tag: ["add tag"]}
 
 
 def command_parser(user_command: str) -> (str, list):

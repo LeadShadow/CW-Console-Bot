@@ -130,3 +130,5 @@ dmypy.json
 .idea/
 .CW/
 test.py
+notes.dat
+contacts.dat
