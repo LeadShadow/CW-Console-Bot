@@ -112,7 +112,6 @@ class Email(Field):
             for i in get_emails:
                 if is_email_valid(i):
                     result = i
-                    print(result)
         if result is None:
             raise AttributeError(f"Неправильний тип значення {value}")
         self.__value = result
