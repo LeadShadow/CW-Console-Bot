@@ -120,18 +120,6 @@ class Note:
         self.tags = []
         self.text = text
 
-    # def hyphenation_string(self):
-    #     self.result_list = re.findall(r'.{49}', self.text)
-    #     if self.result_list:
-    #         self.result = ''
-    #         for i in self.result_list:
-    #             self.result += i + "-" + '\n'
-    #         self.result = self.result + self.text[len(self.result)-2:]
-    #         return self.result
-    #     else:
-    #         self.result = self.text
-    #         return self.result
-
     def __str__(self):
         def hyphenation_string(text) -> str:
             result_list = re.findall(r'.{50}', text)
