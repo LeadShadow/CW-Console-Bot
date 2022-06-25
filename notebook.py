@@ -140,7 +140,8 @@ class Note:
                 for i in result_list:
                     if i[49] == " ":
                         result += i + '\n'
-                    result += i + "-" + '\n'
+                    else:
+                        result += i + "-" + '\n'
                 result = result + text[len(result) - 2:]
                 return result
             else:
