@@ -128,11 +128,13 @@ class Note:
                 for i in result_list:
                     if i[49] == " ":
                         result += i + '\n'
-                    result += i + "-" + '\n'
+                    else:
+                        result += i + "-" + '\n'
                 result = result + text[len(result) - 2:]
                 return result
             else:
-                return text
+                result = text
+                return result
 
         return f"ID: {self.id:^10} {' ' * 17} Date: {self.exec_date}\n" \
                f"Tags: {', '.join(self.tags)}\n" \
@@ -235,7 +237,7 @@ def show_archiv(notebook, *args):
 def find_note(notebook, *args):
     """Повертає нотатки за входженням в текст"""
     def filter_func(note):
-        return subtext in note.text
+        return subtext.lower() in note.text.lower()
 
     subtext = args[0]
     result = f'List of notes with text "{subtext}":\n'
@@ -301,8 +303,7 @@ def add_tag(notebook, *args):
         notebook[id_note].tags.append(note_text)
     else:
         notebook[id_note].tags.append(note_text)
-        notebook[id_note].tags.sort()
-        # notebook[id_note].tags.sort(key=lambda x: x[0])
+        notebook[id_note].tags.sort(key=str.lower)
     return f'Tag {note_text} added to note ID:{id_note}'
 
 
