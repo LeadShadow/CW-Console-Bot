@@ -294,6 +294,7 @@ def days_to_user_birthday(contacts, *args):
     return f'{contacts[name].days_to_birthday(contacts[name].birthday)} days to user {name} birthday'
 
 
+@InputError
 def show_birthday(contacts, *args):
     def func_days(record):
         return record.birthday.value is not None and record.days_to_birthday(record.birthday) <= days
