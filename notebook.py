@@ -26,9 +26,11 @@ class InputError:
         except KeyError:
             return 'Error! Note not found!'
         except ValueError:
-            return 'Error! Number of days is incorrect!'
+            return 'Error! Incorrect argument!'
         except DateIsNotValid:
             return 'Error! Date is not valid'
+        except IndexError:
+            return 'Error! Incorrect argument!'
 
 
 class Field:
@@ -171,6 +173,33 @@ class NoteBook(UserDict):
         yield print_block
 
 
+    def iterator_sort(self, func=None):
+        sort_keys = []
+        for v in self.data.values():
+            if v.tags and v.tags[0].lower() not in sort_keys:
+                sort_keys.append(v.tags[0].lower())
+        index, print_block = 1, '=' * 50 + '\n'
+        for key in sorted(sort_keys):
+            for note in self.data.values():
+                if func is None or func(note):
+                    if note.tags and note.tags[0].lower() == key:
+                        print_block += str(note) + '\n' + '-' * 50 + '\n'
+                        if index < N:
+                            index += 1
+                        else:
+                            yield print_block
+                            index, print_block = 1, '=' * 50 + '\n'
+        for note in self.data.values():
+            if func is None or func(note):
+                if not note.tags:
+                    print_block += str(note) + '\n' + '-' * 50 + '\n'
+                    if index < N:
+                        index += 1
+                    else:
+                        yield print_block
+                        index, print_block = 1, '=' * 50 + '\n'
+        yield print_block
+
 @InputError
 def add_note(notebook, *args):
     """Додає нотатку"""
@@ -206,17 +235,23 @@ def add_date(notebook, *args):
     return f'Date {notebook[id_note].exec_date} added to note ID:{id_note}'
 
 
-def show_all(notebook, *args):
+def show_all(notebook, tag_sorted=False, *args):
     """Повертає всі нотатки"""
     def filter_func(note):
         return not note.is_done
 
     result = 'List of all notes:\n'
-    print_list = notebook.iterator(filter_func)
-    if not print_list:
-        return 'Notebook is empty'
+    if tag_sorted:
+        print_list = notebook.iterator_sort(filter_func)
+        err = 'No tags found'
+    else:
+        print_list = notebook.iterator(filter_func)
+        err = "List is empty"
     for item in print_list:
-        result += f'{item}'
+        if len(item) > 51:
+            result += f'{item}'
+        else:
+            return err
     return result
 
 
@@ -227,10 +262,11 @@ def show_archiv(notebook, *args):
 
     result = 'List of archived notes:\n'
     print_list = notebook.iterator(filter_func)
-    if not print_list:
-        return 'Archive is empty'
     for item in print_list:
-        result += f'{item}'
+        if len(item) > 50:
+            result += f'{item}'
+        else:
+            return 'Archive is empty'
     return result
 
 
@@ -242,10 +278,11 @@ def find_note(notebook, *args):
     subtext = args[0]
     result = f'List of notes with text "{subtext}":\n'
     print_list = notebook.iterator(filter_func)
-    if not print_list:
-        return 'List is empty'
     for item in print_list:
-        result += f'{item}'
+        if len(item) > 50:
+            result += f'{item}'
+        else:
+            return 'List is empty'
     return result
 
 
@@ -266,10 +303,11 @@ def show_date(notebook, *args):
         days = 0
     result = 'List of notes with date:\n'
     print_list = notebook.iterator(filter_func)
-    if not print_list:
-        return 'Notebook is empty'
     for item in print_list:
-        result += f'{item}'
+        if len(item) > 50:
+            result += f'{item}'
+        else:
+            return 'Notebook is empty'
     return result
 
 
@@ -307,6 +345,28 @@ def add_tag(notebook, *args):
     return f'Tag {note_text} added to note ID:{id_note}'
 
 
+@InputError
+def find_tag(notebook, *args):
+    """Повертає нотатки в яких є тег"""
+    def filter_func(note):
+        return tag.lower() in note.tags.lower()
+
+    tag = args[0]
+    result = f'List of notes with tag "{tag}":\n'
+    print_list = notebook.iterator(filter_func)
+    for item in print_list:
+        if len(item) > 50:
+            result += f'{item}'
+        else:
+            return 'No tags found'
+    return result
+
+
+def sort_by_tags(notebook, tag_sorted=True, *args):
+    """Повертає всі нотатки посортовані за тегами"""
+    return show_all(notebook, tag_sorted=True, *args)
+
+
 def goodbye(notebook, *args):
     notebook.save()
     return 'Good bye!'
@@ -331,13 +391,16 @@ def help_me(*args):
     show archived - show archived notes;
     show date <date> [<days>] - show notes by date +- days;
     find note <text> - find note by text;
+    find tag <text> - find note by tag;
+    sort by tags - show all notes sorted by tags;
     good bye or close or exit or . - exit the program"""
 
 
 COMMANDS = {help_me: ['?', 'help'], goodbye: ['good bye', 'close', 'exit', '.'], add_note: ['add note '],
             add_date: ['add date '], show_all: ['show all'], show_archiv: ['show archived'],
             change_note: ['change note '], del_note: ['delete note '], find_note: ['find note '],
-            show_date: ['show date '], done_note: ['done '], return_note: ['return '], add_tag: ["add tag"]}
+            show_date: ['show date '], done_note: ['done '], return_note: ['return '], add_tag: ["add tag"],
+            find_tag: ["find tag"], sort_by_tags: ['sort by tags']}
 
 
 def command_parser(user_command: str) -> (str, list):
