@@ -423,7 +423,7 @@ def start_nb():
     print(help_me())
     while True:
         user_command = prompt('Enter command >>> ',
-                              history=FileHistory('history_for_notebook.txt'),
+                              history=FileHistory('history.txt'),
                               auto_suggest=AutoSuggestFromHistory(),
                               completer=Completer,
                               )

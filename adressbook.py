@@ -405,7 +405,7 @@ def start_ab():
     while True:
         # user_command = input('Enter command >>> ')
         user_command = prompt('Enter command >>> ',
-                              history=FileHistory('history_for_addressbook.txt'),
+                              history=FileHistory('history.txt'),
                               auto_suggest=AutoSuggestFromHistory(),
                               completer=Completer,
                               )

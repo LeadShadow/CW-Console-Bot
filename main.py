@@ -8,10 +8,16 @@ if __name__ == '__main__':
           "{:^10} {:^10} {:^10} {:^10}".format("addressbook", "notebook", "file parser", "quit"))
         user_input = input('Enter command >>> ')
         if user_input == "addressbook":
+            with open("history.txt", "wb"):
+                pass
             start_ab()
         if user_input == "notebook":
+            with open("history.txt", "wb"):
+                pass
             start_nb()
         if user_input == "file parser":
+            with open("history.txt", "wb"):
+                pass
             start_fp()
         if user_input == "quit":
             print('Good bye!')

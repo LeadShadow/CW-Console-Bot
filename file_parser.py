@@ -119,7 +119,7 @@ def start_fp():
     print(help_me())
     while True:
         user_command = prompt('Enter command >>> ',
-                              history=FileHistory('history_for_file_parser.txt'),
+                              history=FileHistory('history.txt'),
                               auto_suggest=AutoSuggestFromHistory(),
                               completer=Completer,
                               )
