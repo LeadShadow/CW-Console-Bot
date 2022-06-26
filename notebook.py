@@ -209,6 +209,7 @@ class NoteBook(UserDict):
                         index, print_block = 1, '=' * 50 + '\n'
         yield print_block
 
+
 @InputError
 def add_note(notebook, *args):
     """Додає нотатку"""
@@ -440,9 +441,9 @@ Completer = NestedCompleter.from_nested_dict({'help': None, 'good bye': None, 'e
                                               'close': None, '?': None, '.': None,
                                               'add': {'note': None, 'date': None, 'tag': None},
                                               'show': {'all': None, 'archived': None, 'date': None},
-                                              'change': {'note': None}, 'delete': {'note': None},
+                                              'change note': None, 'delete note': None,
                                               'find': {'note': None, 'tag': None}, 'done': None,
-                                              'return': None, 'sort': {'by': {'tags': None}}})
+                                              'return': None, 'sort by tags': None})
 
 
 if __name__ == '__main__':

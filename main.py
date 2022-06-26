@@ -12,7 +12,7 @@ if __name__ == '__main__':
         with open("history.txt", "wb"):
             pass
         print("What would you like to start with?\n"
-              "{:^10} {:^10} {:^10} {:^10}".format("addressbook", "notebook", "file parser", "quit"))
+              "{:^20} {:^20} {:^20} {:^20}".format("addressbook", "notebook", "file parser", "quit"))
         user_input = prompt('Enter command >>> ',
                             history=FileHistory('history.txt'),
                             auto_suggest=AutoSuggestFromHistory(),
