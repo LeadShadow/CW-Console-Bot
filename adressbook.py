@@ -1,7 +1,7 @@
 from prompt_toolkit import prompt
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
-from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.completion import NestedCompleter
 
 import datetime
 import pickle
@@ -390,6 +390,8 @@ def start_ab():
     contacts = AddressBook(filename='contacts.dat')
     print(help_me())
     while True:
+        with open("history.txt", "wb"):
+            pass
         # user_command = input('Enter command >>> ')
         user_command = prompt('Enter command >>> ',
                               history=FileHistory('history.txt'),
@@ -402,12 +404,13 @@ def start_ab():
             break
 
 
-Completer = WordCompleter(['help', 'hello', 'add', 'del', 'delete', 'clear', 'birthday', 'email',
-                           'address', 'show', 'show all', 'find', 'search', 'days to birthday',
-                           'show birthday days', 'good bye', 'close', 'exit', '.', '?'],
-                          ignore_case=True)
+Completer = NestedCompleter.from_nested_dict({'help': None, 'good bye': None, 'exit': None,
+                                              'close': None, '?': None, '.': None, 'birthday': None,
+                                              'days': {'to': {"birthday": None}},
+                                              'add': None, 'show': {'all': None, 'birthday': {'days': None}},
+                                              'change': {'note': None}, 'del': None, 'delete': None,
+                                              'clear': None, 'email': None, 'find': None, 'search': None,
+                                              'address': None})
 
 if __name__ == "__main__":
     start_ab()
-
-

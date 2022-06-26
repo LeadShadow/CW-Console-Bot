@@ -2,7 +2,7 @@
 from prompt_toolkit import prompt
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
-from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.completion import NestedCompleter
 
 import datetime
 import pickle
@@ -267,7 +267,7 @@ def show_archiv(notebook, *args):
     result = 'List of archived notes:\n'
     print_list = notebook.iterator(filter_func)
     for item in print_list:
-        if len(item) > 50:
+        if len(item) > 51:
             result += f'{item}'
         else:
             return 'Archive is empty'
@@ -283,7 +283,7 @@ def find_note(notebook, *args):
     result = f'List of notes with text "{subtext}":\n'
     print_list = notebook.iterator(filter_func)
     for item in print_list:
-        if len(item) > 50:
+        if len(item) > 51:
             result += f'{item}'
         else:
             return 'List is empty'
@@ -308,7 +308,7 @@ def show_date(notebook, *args):
     result = 'List of notes with date:\n'
     print_list = notebook.iterator(filter_func)
     for item in print_list:
-        if len(item) > 50:
+        if len(item) > 51:
             result += f'{item}'
         else:
             return 'Notebook is empty'
@@ -353,13 +353,12 @@ def add_tag(notebook, *args):
 def find_tag(notebook, *args):
     """Повертає нотатки в яких є тег"""
     def filter_func(note):
-        return tag.lower() in note.tags.lower()
-
+        return [t.lower() for t in note.tags if t == tag.lower()]
     tag = args[0]
     result = f'List of notes with tag "{tag}":\n'
     print_list = notebook.iterator(filter_func)
     for item in print_list:
-        if len(item) > 50:
+        if len(item) > 51:
             result += f'{item}'
         else:
             return 'No tags found'
@@ -421,6 +420,8 @@ def start_nb():
     notebook = NoteBook(filename='notes.dat')
     print(help_me())
     while True:
+        with open("history.txt", "wb"):
+            pass
         user_command = prompt('Enter command >>> ',
                               history=FileHistory('history.txt'),
                               auto_suggest=AutoSuggestFromHistory(),
@@ -432,11 +433,13 @@ def start_nb():
             break
 
 
-Completer = WordCompleter(['help', 'good bye', 'close', 'exit', '.', 'add note',
-                           'add date', 'show all', 'show archived', 'change note',
-                           'delete note', 'find note', 'show date', 'done', 'return', 'add tag', '?',
-                           'find tag', 'sort by tags'],
-                          ignore_case=True)
+Completer = NestedCompleter.from_nested_dict({'help': None, 'good bye': None, 'exit': None,
+                                              'close': None, '?': None, '.': None,
+                                              'add': {'note': None, 'date': None, 'tag': None},
+                                              'show': {'all': None, 'archived': None, 'date': None},
+                                              'change': {'note': None}, 'delete': {'note': None},
+                                              'find': {'note': None, 'tag': None}, 'done': None,
+                                              'return': None, 'sort': {'by': {'tags': None}}})
 
 
 if __name__ == '__main__':
