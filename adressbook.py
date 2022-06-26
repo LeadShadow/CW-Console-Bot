@@ -105,21 +105,17 @@ class Email(Field):
 
     @value.setter
     def value(self, value: str):
-        def is_email_valid(email_address):
-            if email_address.endswith("@gmail.com") or email_address.endswith("@ukr.net"):
-                return True
-            else:
-                return False
-
-        result = None
-        get_emails = re.findall(r'\b[a-zA-Z][\w\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}', value)
-        if get_emails:
-            for i in get_emails:
-                if is_email_valid(i):
+        if value is None:
+            self.__value = None
+        else:
+            result = None
+            get_emails = re.findall(r'\b[a-zA-Z][\w\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}', value)
+            if get_emails:
+                for i in get_emails:
                     result = i
-        if result is None:
-            raise AttributeError(f"Неправильний тип значення {value}")
-        self.__value = result
+            if result is None:
+                raise AttributeError(f"Неправильний тип значення {value}")
+            self.__value = result
 
 
 class Record:
@@ -242,11 +238,11 @@ def add_contact(contacts, *args):
             email = Email(args[3])
         if len(args) > 4:
             address = Address(args[4])
-        if len(args) < 2:
+        if len(args) <= 2:
             birthday = Birthday(None)
-        if len(args) < 3:
+        if len(args) <= 3:
             email = Email(None)
-        if len(args) < 4:
+        if len(args) <= 4:
             address = Address(None)
         contacts[name.value] = Record(name, [phone], birthday, email, address)
         return f'Add user {name} with phone number {phone}'
@@ -358,18 +354,9 @@ def add_email(contacts, *args):
 
 @InputError
 def add_address(contacts, *args):
-    if len(args) > 2:
-        name, address = args[0], args[1] + " " + args[2]
-        contacts[name].address = Address(address)
-        return f'Add/modify address {contacts[name].address} to user {name}'
-    if len(args) > 3:
-        name, address = args[0], args[1] + " " + args[2] + " " + args[3]
-        contacts[name].address = Address(address)
-        return f'Add/modify address {contacts[name].address} to user {name}'
-    if len(args) > 4:
-        name, address = args[0], args[1] + " " + args[2] + " " + args[3] + " " + args[4]
-        contacts[name].address = Address(address)
-        return f'Add/modify address {contacts[name].address} to user {name}'
+    name, address = args[0], " ".join(args[1:])
+    contacts[name].address = Address(address)
+    return f'Add/modify address {contacts[name].address} to user {name}'
 
 
 def help_me(*args):
@@ -419,4 +406,8 @@ Completer = WordCompleter(['help', 'hello', 'add', 'del', 'delete', 'clear', 'bi
                            'address', 'show', 'show all', 'find', 'search', 'days to birthday',
                            'show birthday days', 'good bye', 'close', 'exit', '.', '?'],
                           ignore_case=True)
+
+if __name__ == "__main__":
+    start_ab()
+
 

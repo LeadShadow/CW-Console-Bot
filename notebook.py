@@ -177,7 +177,6 @@ class NoteBook(UserDict):
                     index, print_block = 1, '=' * 50 + '\n'
         yield print_block
 
-
     def iterator_sort(self, func=None):
         sort_keys = []
         for v in self.data.values():
