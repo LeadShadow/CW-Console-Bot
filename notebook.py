@@ -4,6 +4,7 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import NestedCompleter
 
+from command_parser import RainbowLexer
 import datetime
 import pickle
 import re
@@ -422,7 +423,7 @@ def command_parser(user_command: str) -> (str, list):
 
 def start_nb():
     notebook = NoteBook(filename='notes.dat')
-    print(help_me())
+    print(f"\033[035m {help_me()} \033[0m")
     while True:
         with open("history.txt", "wb"):
             pass
@@ -430,6 +431,7 @@ def start_nb():
                               history=FileHistory('history.txt'),
                               auto_suggest=AutoSuggestFromHistory(),
                               completer=Completer,
+                              lexer=RainbowLexer()
                               )
         command, data = command_parser(user_command)
         print(command(notebook, *data), '\n')

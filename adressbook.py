@@ -2,7 +2,7 @@ from prompt_toolkit import prompt
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import NestedCompleter
-
+from command_parser import RainbowLexer
 import datetime
 import pickle
 from pathlib import Path
@@ -10,6 +10,9 @@ from collections import UserDict
 from datetime import date
 import colorama
 import re
+
+from pygments.lexers import SqlLexer
+
 from command_parser import command_parser
 
 N = 3  # кількість записів для представлення телефонної книги
@@ -389,7 +392,7 @@ COMMANDS_A = {salute: ['hello'], add_contact: ['add '], change_contact: ['change
 
 def start_ab():
     contacts = AddressBook(filename='contacts.dat')
-    print(help_me())
+    print(f"\033[031m {help_me()} \033[0m")
     while True:
         with open("history.txt", "wb"):
             pass
@@ -398,6 +401,7 @@ def start_ab():
                               history=FileHistory('history.txt'),
                               auto_suggest=AutoSuggestFromHistory(),
                               completer=Completer,
+                              lexer=RainbowLexer()
                               )
         command, data = command_parser(user_command, COMMANDS_A)
         print(command(contacts, *data), '\n')
@@ -405,7 +409,7 @@ def start_ab():
             break
 
 
-Completer = NestedCompleter.from_nested_dict({'help': None, 'good bye': None, 'exit': None,
+Completer = NestedCompleter.from_nested_dict({'help': None, 'hello': None, 'good bye': None, 'exit': None,
                                               'close': None, '?': None, '.': None, 'birthday': None,
                                               'days to birthday': None, 'add': None,
                                               'show': {'all': None, 'birthday days': None},
