@@ -1,3 +1,8 @@
+from prompt_toolkit import prompt
+from prompt_toolkit.history import FileHistory
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.completion import WordCompleter
+
 import datetime
 import pickle
 from pathlib import Path
@@ -398,8 +403,20 @@ def start_ab():
     contacts = AddressBook(filename='contacts.dat')
     print(help_me())
     while True:
-        user_command = input('Enter command >>> ')
+        # user_command = input('Enter command >>> ')
+        user_command = prompt('Enter command >>> ',
+                              history=FileHistory('history_for_addressbook.txt'),
+                              auto_suggest=AutoSuggestFromHistory(),
+                              completer=Completer,
+                              )
         command, data = command_parser(user_command, COMMANDS_A)
         print(command(contacts, *data), '\n')
         if command is goodbye:
             break
+
+
+Completer = WordCompleter(['help', 'hello', 'add', 'del', 'delete', 'clear', 'birthday', 'email',
+                           'address', 'show', 'show all', 'find', 'search', 'days to birthday',
+                           'show birthday days', 'good bye', 'close', 'exit', '.', '?'],
+                          ignore_case=True)
+

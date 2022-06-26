@@ -1,4 +1,9 @@
 """Модуль для роботи з нотатками"""
+from prompt_toolkit import prompt
+from prompt_toolkit.history import FileHistory
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.completion import WordCompleter
+
 import datetime
 import pickle
 import re
@@ -417,11 +422,22 @@ def start_nb():
     notebook = NoteBook(filename='notes.dat')
     print(help_me())
     while True:
-        user_command = input('Enter command >>> ')
+        user_command = prompt('Enter command >>> ',
+                              history=FileHistory('history_for_notebook.txt'),
+                              auto_suggest=AutoSuggestFromHistory(),
+                              completer=Completer,
+                              )
         command, data = command_parser(user_command)
         print(command(notebook, *data), '\n')
         if command is goodbye:
             break
+
+
+Completer = WordCompleter(['help', 'good bye', 'close', 'exit', '.', 'add note',
+                           'add date', 'show all', 'show archived', 'change note',
+                           'delete note', 'find note', 'show date', 'done', 'return', 'add tag', '?',
+                           'find tag', 'sort by tags'],
+                          ignore_case=True)
 
 
 if __name__ == '__main__':
