@@ -167,15 +167,20 @@ class NoteBook(UserDict):
 
     def iterator(self, func=None):
         index, print_block = 1, '=' * 50 + '\n'
+        is_empty = True
         for note in self.data.values():
             if func is None or func(note):
+                is_empty = False
                 print_block += str(note) + '\n' + '-' * 50 + '\n'
                 if index < N:
                     index += 1
                 else:
                     yield print_block
                     index, print_block = 1, '=' * 50 + '\n'
-        yield print_block
+        if is_empty:
+            yield None
+        else:
+            yield print_block
 
     def iterator_sort(self, func=None):
         sort_keys = []
@@ -247,15 +252,13 @@ def show_all(notebook, tag_sorted=False, *args):
     result = 'List of all notes:\n'
     if tag_sorted:
         print_list = notebook.iterator_sort(filter_func)
-        err = 'No tags found'
     else:
         print_list = notebook.iterator(filter_func)
-        err = "List is empty"
     for item in print_list:
-        if len(item) > 51:
-            result += f'{item}'
+        if item is None:
+            return 'No notes found'
         else:
-            return err
+            result += f'{item}'
     return result
 
 
@@ -267,10 +270,10 @@ def show_archiv(notebook, *args):
     result = 'List of archived notes:\n'
     print_list = notebook.iterator(filter_func)
     for item in print_list:
-        if len(item) > 51:
-            result += f'{item}'
+        if item is None:
+            return 'No notes found'
         else:
-            return 'Archive is empty'
+            result += f'{item}'
     return result
 
 
@@ -283,10 +286,10 @@ def find_note(notebook, *args):
     result = f'List of notes with text "{subtext}":\n'
     print_list = notebook.iterator(filter_func)
     for item in print_list:
-        if len(item) > 51:
-            result += f'{item}'
+        if item is None:
+            return 'No notes found'
         else:
-            return 'List is empty'
+            result += f'{item}'
     return result
 
 
@@ -308,10 +311,10 @@ def show_date(notebook, *args):
     result = 'List of notes with date:\n'
     print_list = notebook.iterator(filter_func)
     for item in print_list:
-        if len(item) > 51:
-            result += f'{item}'
+        if item is None:
+            return 'No notes found'
         else:
-            return 'Notebook is empty'
+            result += f'{item}'
     return result
 
 
@@ -358,10 +361,10 @@ def find_tag(notebook, *args):
     result = f'List of notes with tag "{tag}":\n'
     print_list = notebook.iterator(filter_func)
     for item in print_list:
-        if len(item) > 51:
-            result += f'{item}'
+        if item is None:
+            return 'No notes found'
         else:
-            return 'No tags found'
+            result += f'{item}'
     return result
 
 
