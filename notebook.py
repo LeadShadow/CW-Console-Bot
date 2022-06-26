@@ -135,7 +135,8 @@ class Note:
                 result = result + text[len(result) - 2:]
                 return result
             else:
-                return text
+                result = text
+                return result
 
         return f"ID: {self.id:^10} {' ' * 17} Date: {self.exec_date}\n" \
                f"Tags: {', '.join(self.tags)}\n" \
@@ -273,6 +274,7 @@ def find_note(notebook, *args):
     """Повертає нотатки за входженням в текст"""
     def filter_func(note):
         return subtext.lower() in note.text.lower()
+
     subtext = args[0]
     result = f'List of notes with text "{subtext}":\n'
     print_list = notebook.iterator(filter_func)
