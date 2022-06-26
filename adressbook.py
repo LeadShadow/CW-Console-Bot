@@ -407,9 +407,9 @@ def start_ab():
 
 Completer = NestedCompleter.from_nested_dict({'help': None, 'good bye': None, 'exit': None,
                                               'close': None, '?': None, '.': None, 'birthday': None,
-                                              'days': {'to': {"birthday": None}},
-                                              'add': None, 'show': {'all': None, 'birthday': {'days': None}},
-                                              'change': {'note': None}, 'del': None, 'delete': None,
+                                              'days to birthday': None, 'add': None,
+                                              'show': {'all': None, 'birthday days': None},
+                                              'change note': None, 'del': None, 'delete': None,
                                               'clear': None, 'email': None, 'find': None, 'search': None,
                                               'address': None})
 
