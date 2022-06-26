@@ -1,4 +1,9 @@
 from pathlib import Path
+from prompt_toolkit import prompt
+from prompt_toolkit.history import FileHistory
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.completion import NestedCompleter
+
 import shutil
 from fp.parser import *
 from fp.normalize import normalize
@@ -113,8 +118,19 @@ COMMANDS_F = {file_parser: ['parse '], help_me: ['?', 'help'], goodbye: ['good b
 def start_fp():
     print(help_me())
     while True:
-        user_command = input('Enter the folder name to parse >>> ')
+        with open("history.txt", "wb"):
+            pass
+        user_command = prompt('Enter command >>> ',
+                              history=FileHistory('history.txt'),
+                              auto_suggest=AutoSuggestFromHistory(),
+                              completer=Completer,
+                              )
         command, data = command_parser(user_command, COMMANDS_F)
         print(command(*data), '\n')
         if command is goodbye:
             break
+
+
+Completer = NestedCompleter.from_nested_dict({'help': None, '?': None, 'parse': None, 'good bye': None,
+                                              'close': None, 'exit': None, '.': None})
+
