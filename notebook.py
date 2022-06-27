@@ -166,10 +166,13 @@ class NoteBook(UserDict):
         with open(self.filename, 'wb') as db:
             pickle.dump(self.data, db)
 
-    def iterator(self, func=None):
+    def iterator(self, func=None, sort_by_tags=False):
         index, print_block = 1, '=' * 50 + '\n'
         is_empty = True
-        for note in self.data.values():
+        data_values = self.data.values()
+        if sort_by_tags:
+            data_values = sorted(data_values, key=lambda x: x.tags)
+        for note in data_values:
             if func is None or func(note):
                 is_empty = False
                 print_block += str(note) + '\n' + '-' * 50 + '\n'
@@ -183,32 +186,32 @@ class NoteBook(UserDict):
         else:
             yield print_block
 
-    def iterator_sort(self, func=None):
-        sort_keys = []
-        for v in self.data.values():
-            if v.tags and v.tags[0].lower() not in sort_keys:
-                sort_keys.append(v.tags[0].lower())
-        index, print_block = 1, '=' * 50 + '\n'
-        for key in sorted(sort_keys):
-            for note in self.data.values():
-                if func is None or func(note):
-                    if note.tags and note.tags[0].lower() == key:
-                        print_block += str(note) + '\n' + '-' * 50 + '\n'
-                        if index < N:
-                            index += 1
-                        else:
-                            yield print_block
-                            index, print_block = 1, '=' * 50 + '\n'
-        for note in self.data.values():
-            if func is None or func(note):
-                if not note.tags:
-                    print_block += str(note) + '\n' + '-' * 50 + '\n'
-                    if index < N:
-                        index += 1
-                    else:
-                        yield print_block
-                        index, print_block = 1, '=' * 50 + '\n'
-        yield print_block
+    # def iterator_sort(self, func=None):
+    #     sort_keys = []
+    #     for v in self.data.values():
+    #         if v.tags and v.tags[0].lower() not in sort_keys:
+    #             sort_keys.append(v.tags[0].lower())
+    #     index, print_block = 1, '=' * 50 + '\n'
+    #     for key in sorted(sort_keys):
+    #         for note in self.data.values():
+    #             if func is None or func(note):
+    #                 if note.tags and note.tags[0].lower() == key:
+    #                     print_block += str(note) + '\n' + '-' * 50 + '\n'
+    #                     if index < N:
+    #                         index += 1
+    #                     else:
+    #                         yield print_block
+    #                         index, print_block = 1, '=' * 50 + '\n'
+    #     for note in self.data.values():
+    #         if func is None or func(note):
+    #             if not note.tags:
+    #                 print_block += str(note) + '\n' + '-' * 50 + '\n'
+    #                 if index < N:
+    #                     index += 1
+    #                 else:
+    #                     yield print_block
+    #                     index, print_block = 1, '=' * 50 + '\n'
+    #     yield print_block
 
 
 @InputError
@@ -252,10 +255,11 @@ def show_all(notebook, tag_sorted=False, *args):
         return not note.is_done
 
     result = 'List of all notes:\n'
-    if tag_sorted:
-        print_list = notebook.iterator_sort(filter_func)
-    else:
-        print_list = notebook.iterator(filter_func)
+    print_list = notebook.iterator(filter_func, tag_sorted)
+    # if tag_sorted:
+    #     print_list = notebook.iterator_sort(filter_func)
+    # else:
+    #     print_list = notebook.iterator(filter_func)
     for item in print_list:
         if item is None:
             return 'No notes found'
@@ -358,7 +362,8 @@ def add_tag(notebook, *args):
 def find_tag(notebook, *args):
     """Повертає нотатки в яких є тег"""
     def filter_func(note):
-        return [t.lower() for t in note.tags if t == tag.lower()]
+        # return [t.lower() for t in note.tags if t == tag.lower()]
+        return tag.lower() in [t.lower() for t in note.tags]
     tag = args[0]
     result = f'List of notes with tag "{tag}":\n'
     print_list = notebook.iterator(filter_func)
@@ -423,7 +428,7 @@ def command_parser(user_command: str) -> (str, list):
 
 def start_nb():
     notebook = NoteBook(filename='notes.dat')
-    print(f"\033[035m {help_me()} \033[0m")
+    print(f"\033[035m {help_me()} \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass

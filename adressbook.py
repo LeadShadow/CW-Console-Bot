@@ -392,7 +392,7 @@ COMMANDS_A = {salute: ['hello'], add_contact: ['add '], change_contact: ['change
 
 def start_ab():
     contacts = AddressBook(filename='contacts.dat')
-    print(f"\033[031m {help_me()} \033[0m")
+    print(f"\033[031m {help_me()} \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass
