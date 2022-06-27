@@ -3,6 +3,7 @@ from prompt_toolkit import prompt
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import NestedCompleter
+from command_parser import RainbowLexer
 
 import shutil
 from fp.parser import *
@@ -116,7 +117,7 @@ COMMANDS_F = {file_parser: ['parse '], help_me: ['?', 'help'], goodbye: ['good b
 
 
 def start_fp():
-    print(help_me())
+    print(f"\033[033m {help_me()} \033[0m")
     while True:
         with open("history.txt", "wb"):
             pass
@@ -124,6 +125,7 @@ def start_fp():
                               history=FileHistory('history.txt'),
                               auto_suggest=AutoSuggestFromHistory(),
                               completer=Completer,
+                              lexer=RainbowLexer()
                               )
         command, data = command_parser(user_command, COMMANDS_F)
         print(command(*data), '\n')
