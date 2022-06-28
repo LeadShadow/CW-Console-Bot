@@ -395,7 +395,7 @@ def unknown_command(*args):
 
 def help_me(*args):
     """Повертає допомогу по списку команд"""
-    return """Command format:
+    return """\nCommand format:
     help or ? - this help;
     add note <text> - add note;
     change note <id> <text> - change note;
