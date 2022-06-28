@@ -19,7 +19,7 @@ def help_me(*args):
 
 
 def goodbye(*args):
-    return 'Good bye!'
+    return 'You have finished working with file_parser'
 
 
 def handle_media(filename: Path, target_folder: Path):
@@ -117,7 +117,7 @@ COMMANDS_F = {file_parser: ['parse '], help_me: ['?', 'help'], goodbye: ['good b
 
 
 def start_fp():
-    print(f"\033[033m {help_me()} \033[0m")
+    print(f"\033[033m 'Write command 'help' that see commands' \033[0m")
     while True:
         with open("history.txt", "wb"):
             pass

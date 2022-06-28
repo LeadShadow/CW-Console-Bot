@@ -69,7 +69,7 @@ class Phone(Field):
 class Birthday(Field):
     def __str__(self):
         if self.value is None:
-            return 'Unknown'
+            return '-'
         else:
             return f'{self.value:%d %b %Y}'
 
@@ -98,7 +98,12 @@ class Address(Field):
 
     @value.setter
     def value(self, value: str):
+        if value is None:
+            self.__value = None
         self.__value = value
+
+    def __str__(self):
+        return '-'
 
 
 class Email(Field):
@@ -120,6 +125,9 @@ class Email(Field):
                 raise AttributeError(f"Неправильний тип значення {value}")
             self.__value = result
 
+    def __str__(self):
+        return '-'
+
 
 class Record:
     def __init__(self, name: Name, phones=[], birthday=None, email=None, address=None) -> None:
@@ -130,7 +138,7 @@ class Record:
         self.email = email
 
     def __str__(self) -> str:
-        return f' User \033[35m{self.name.value:20}\033[0m - Birthday {self.birthday}\n' \
+        return f' User \033[35m{self.name.value:20}\033[0m Birthday: {self.birthday}\n' \
                f'     Phones: {", ".join([phone.value for phone in self.phone_list])}\n' \
                f'     Email: {self.email}\n' \
                f'     Address: {self.address}'
@@ -326,7 +334,7 @@ def show_birthday(contacts, *args):
 
 def goodbye(contacts, *args):
     contacts.save()
-    return 'Good bye!'
+    return 'You have finished working with addressbook'
 
 
 @InputError
@@ -384,7 +392,6 @@ def add_address(contacts, *args):
 
 
 def help_me(*args):
-    com_format = '\n' + '{:^25}'.format("Command format")
     return """\nCommand format:
     help or ? - this help;
     hello - greeting;
@@ -413,7 +420,7 @@ COMMANDS_A = {salute: ['hello'], add_contact: ['add '], change_contact: ['change
 
 def start_ab():
     contacts = AddressBook(filename='contacts.dat')
-    print(f"\033[031m {help_me()} \033[0m\n")
+    print(f"\033[032m 'Write command 'help' that see commands' \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass

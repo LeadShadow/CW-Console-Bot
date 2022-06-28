@@ -386,7 +386,7 @@ def sort_by_tags(notebook, tag_sorted=True, *args):
 
 def goodbye(notebook, *args):
     notebook.save()
-    return 'Good bye!'
+    return 'You have finished working with notebook'
 
 
 def unknown_command(*args):
@@ -432,7 +432,7 @@ def command_parser(user_command: str) -> (str, list):
 
 def start_nb():
     notebook = NoteBook(filename='notes.dat')
-    print(f"\033[035m {help_me()} \033[0m\n")
+    print(f"\033[035m 'Type command 'help' or '?' that see commands' \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass
