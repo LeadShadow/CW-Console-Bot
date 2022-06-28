@@ -349,13 +349,17 @@ def return_note(notebook, *args):
 @InputError
 def add_tag(notebook, *args):
     id_note = int(args[0])
-    note_text = ' '.join(args[1:])
-    if not notebook[id_note].tags:
-        notebook[id_note].tags.append(note_text)
-    else:
-        notebook[id_note].tags.append(note_text)
+    note_tags = re.sub(r'[;,.!?]', ' ', ' '.join(args[1:])).title().split()
+    for tag in note_tags:
+        if tag not in notebook[id_note].tags:
+            notebook[id_note].tags.append(tag)
+        else:
+            note_tags.remove(tag)
         notebook[id_note].tags.sort(key=str.lower)
-    return f'Tag {note_text} added to note ID:{id_note}'
+    if note_tags:
+        return f'Tags {", ".join(sorted(note_tags))} added to note ID:{id_note}'
+    else:
+        return f'No tags added to note ID:{id_note}'
 
 
 @InputError
