@@ -12,7 +12,7 @@ from command_parser import command_parser
 
 
 def help_me(*args):
-    return """Command format:
+    return """\nCommand format:
     help or ? - this help;
     parse folder_name- sorts files in the folder;
     good bye or close or exit or . - exit the program"""

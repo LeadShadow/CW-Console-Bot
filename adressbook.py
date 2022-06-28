@@ -195,6 +195,10 @@ class EmailIsNotValid(Exception):
     """Email is not valid, try again"""
 
 
+class FindNotFound(Exception):
+    """Find is not valid, try again"""
+
+
 class InputError:
     def __init__(self, func) -> None:
         self.func = func
@@ -214,6 +218,8 @@ class InputError:
             return 'Error! Date is not valid'
         except AttributeError:
             return 'Error! Email is not valid'
+        except FindNotFound:
+            return 'Error! Try command find or search "words" that find contact'
 
 
 def salute(*args):
@@ -294,7 +300,7 @@ def days_to_user_birthday(contacts, *args):
     name = args[0]
     if contacts[name].birthday.value is None:
         return 'User has no birthday'
-    return f'{contacts[name].days_to_birthday(contacts[name].birthday)} days to user {name} birthday'
+    return f'{contacts[name].days_to_birthday(contacts[name].birthday)} days to birthday user {name}'
 
 
 @InputError
@@ -315,18 +321,21 @@ def goodbye(contacts, *args):
     return 'Good bye!'
 
 
+@InputError
 def search(contacts, *args):
     def func_sub(record):
         return substring.lower() in record.name.value.lower() or \
                any(substring in phone.value for phone in record.phone_list) or \
                (record.birthday.value is not None and substring in record.birthday.value.strftime('%d.%m.%Y'))
-
-    substring = args[0]
-    result = f'List of users with \'{substring.lower()}\' in data:\n'
-    print_list = contacts.iterator(func_sub)
-    for item in print_list:
-        result += f'{item}'
-    return result
+    if len(args) == 1:
+        substring = args[0]
+        result = f'List of users with \'{substring.lower()}\' in data:\n'
+        print_list = contacts.iterator(func_sub)
+        for item in print_list:
+            result += f'{item}'
+        return result
+    else:
+        raise FindNotFound
 
 
 @InputError
@@ -364,7 +373,8 @@ def add_address(contacts, *args):
 
 
 def help_me(*args):
-    return """Command format:
+    com_format = '\n' + '{:^25}'.format("Command format")
+    return """\nCommand format:
     help or ? - this help;
     hello - greeting;
     add name phone [birthday] - add user to directory;
@@ -413,7 +423,7 @@ Completer = NestedCompleter.from_nested_dict({'help': None, 'hello': None, 'good
                                               'close': None, '?': None, '.': None, 'birthday': None,
                                               'days to birthday': None, 'add': None,
                                               'show': {'all': None, 'birthday days': None},
-                                              'change note': None, 'del': None, 'delete': None,
+                                              'change': None, 'del': None, 'delete': None,
                                               'clear': None, 'email': None, 'find': None, 'search': None,
                                               'address': None})
 
