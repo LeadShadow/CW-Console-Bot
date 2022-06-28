@@ -30,5 +30,5 @@ if __name__ == '__main__':
         if user_input == "file parser":
             start_fp()
         if user_input == "quit":
-            print('Good bye!')
+            print('Good luck, it was nice to meet you!')
             break
