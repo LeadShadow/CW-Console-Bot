@@ -400,10 +400,10 @@ def help_me(*args):
     add note <text> - add note;
     change note <id> <text> - change note;
     delete note <id> - delete note;
-    add date id <date> - add/change date;
-    add tag id <tag> - add tag;
-    done id - mark note as done;
-    return id - mark note as not done;
+    add date <id> <date> - add/change date;
+    add tag <id> <tag> - add tag;
+    done <id> - mark note as done;
+    return <id> - mark note as not done;
     show all - show all notes;
     show archived - show archived notes;
     show date <date> [<days>] - show notes by date +- days;
@@ -432,7 +432,8 @@ def command_parser(user_command: str) -> (str, list):
 
 def start_nb():
     notebook = NoteBook(filename='notes.dat')
-    print(f"\033[035m 'Type command 'help' or '?' that see commands' \033[0m\n")
+    print('\n\033[033mWelcome to notebook!\033[0m')
+    print(f"\033[032mType command or '?' for help \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass

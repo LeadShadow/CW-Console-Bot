@@ -103,7 +103,10 @@ class Address(Field):
         self.__value = value
 
     def __str__(self):
-        return '-'
+        if self.value is None:
+            return '-'
+        else:
+            return f'{self.value}'
 
 
 class Email(Field):
@@ -125,22 +128,23 @@ class Email(Field):
                 raise AttributeError(f"Неправильний тип значення {value}")
             self.__value = result
 
-    def __str__(self):
-        return '-'
-
 
 class Record:
-    def __init__(self, name: Name, phones=[], birthday=None, email=None, address=None) -> None:
+    def __init__(self, name: Name, phones=[], birthday=None, emails=[], address=None) -> None:
         self.name = name
         self.phone_list = phones
         self.birthday = birthday
         self.address = address
-        self.email = email
+        self.email_list = emails
 
     def __str__(self) -> str:
+        if self.email_list:
+            emails = ',\n            '.join([email.value for email in self.email_list])
+        else:
+            emails = '-'
         return f' User \033[35m{self.name.value:20}\033[0m Birthday: {self.birthday}\n' \
                f'     Phones: {", ".join([phone.value for phone in self.phone_list])}\n' \
-               f'     Email: {self.email}\n' \
+               f'     Email: {emails}\n' \
                f'     Address: {self.address}'
 
     def add_phone(self, phone: Phone) -> None:
@@ -152,6 +156,12 @@ class Record:
     def edit_phone(self, phone: Phone, new_phone: Phone) -> None:
         self.phone_list.remove(phone)
         self.phone_list.append(new_phone)
+
+    def add_email(self, email: Email) -> None:
+        self.email_list.append(email)
+
+    def del_email(self, email: Email) -> None:
+        self.email_list.remove(email)
 
     def days_to_birthday(self, birthday: Birthday):
         if birthday.value is None:
@@ -179,17 +189,17 @@ class AddressBook(UserDict):
         self.data[record.name.value] = record
 
     def iterator(self, func=None, days=0):
-        index, print_block = 1, '-' * 50 + '\n'
+        index, print_block = 1, '=' * 50 + '\n'
         is_empty = True
         for record in self.data.values():
             if func is None or func(record):
                 is_empty = False
-                print_block += str(record) + '\n'
+                print_block += str(record) + '\n' + '-' * 50 + '\n'
                 if index < N:
                     index += 1
                 else:
                     yield print_block
-                    index, print_block = 1, '-' * 50 + '\n'
+                    index, print_block = 1, '=' * 50 + '\n'
         if is_empty:
             yield None
         else:
@@ -198,6 +208,10 @@ class AddressBook(UserDict):
 
 class PhoneUserAlreadyExists(Exception):
     """You cannot add an existing phone number to a user"""
+
+
+class EmailUserAlreadyExists(Exception):
+    """You cannot add an existing email to a user"""
 
 
 class DateIsNotValid(Exception):
@@ -227,6 +241,8 @@ class InputError:
             return 'Error! Phone number is incorrect!'
         except PhoneUserAlreadyExists:
             return 'Error! You cannot add an existing phone number to a user'
+        except EmailUserAlreadyExists:
+            return 'Error! You cannot add an existing email to a user'
         except DateIsNotValid:
             return 'Error! Date is not valid'
         except AttributeError:
@@ -244,7 +260,7 @@ def add_contact(contacts, *args):
     name = Name(args[0])
     phone = Phone(args[1])
     birthday = None
-    email = None
+    emails = []
     address = None
     if name.value in contacts:
         if phone in contacts[name.value].phone_list:
@@ -257,16 +273,16 @@ def add_contact(contacts, *args):
         if len(args) > 2:
             birthday = Birthday(args[2])
         if len(args) > 3:
-            email = Email(args[3])
+            emails = [Email(args[3])]
         if len(args) > 4:
             address = Address(args[4])
         if len(args) <= 2:
             birthday = Birthday(None)
         if len(args) <= 3:
-            email = Email(None)
+            emails = []
         if len(args) <= 4:
             address = Address(None)
-        contacts[name.value] = Record(name, [phone], birthday, email, address)
+        contacts[name.value] = Record(name, [phone], birthday, emails, address)
         return f'Add user {name} with phone number {phone}'
 
 
@@ -379,9 +395,19 @@ def clear_all(contacts, *args):
 
 @InputError
 def add_email(contacts, *args):
+    name, email = args[0], Email(args[1])
+    if email in contacts[name].email_list:
+        raise EmailUserAlreadyExists
+    else:
+        contacts[name].add_email(email)
+        return f'Add email {email} to user {name}'
+
+
+@InputError
+def del_email(contacts, *args):
     name, email = args[0], args[1]
-    contacts[name].email = Email(email)
-    return f'Add/modify email {contacts[name].email} to user {name}'
+    contacts[name].del_email(Email(email))
+    return f'Delete email {email} from user {name}'
 
 
 @InputError
@@ -395,32 +421,35 @@ def help_me(*args):
     return """\nCommand format:
     help or ? - this help;
     hello - greeting;
-    add name phone [birthday] - add user to directory;
-    change name old_phone new_phone - change the user's phone number;
-    del name phone - delete the user's phone number;
-    delete name - delete the user;
+    add <name> <phone> [<birthday>] - add user to directory;
+    change <name> <old_phone> <new_phone> - change the user's phone number;
+    del phone <name> <phone> - delete the user's phone number;
+    delete <name> - delete the user;
     clear - delete all users;
-    birthday name birthday - add/modify the user's birthday;
-    email name email - add/modify the user's email;
-    address name address - add/modify the user's address;
-    show name - show the user's data;
+    birthday <name> <birthday> - add/modify the user's birthday;
+    email <name> <email> - add the user's email;
+    del email <name> <email> - delete the user's email;
+    address <name> <address> - add/modify the user's address;
+    show <name> - show the user's data;
     show all - show data of all users;
-    find or search sub - show data of all users with sub in name, phones or birthday;
-    days to birthday name - show how many days to the user's birthday;
-    show birthday days N - show the user's birthday in the next N days;
+    find or search <sub> - show data of all users with sub in name, phones or birthday;
+    days to birthday <name> - show how many days to the user's birthday;
+    show birthday days <N> - show the user's birthday in the next N days;
     good bye or close or exit or . - exit the program"""
 
 
 COMMANDS_A = {salute: ['hello'], add_contact: ['add '], change_contact: ['change '], help_me: ['?', 'help'],
-              show_all: {'show all'}, goodbye: ['good bye', 'close', 'exit', '.'], del_phone: ['del '],
+              show_all: {'show all'}, goodbye: ['good bye', 'close', 'exit', '.'], del_phone: ['del phone '],
               add_birthday: ['birthday'], days_to_user_birthday: ['days to birthday '],
               show_birthday: ['show birthday days '], show_phone: ['show '], search: ['find ', 'search '],
-              del_user: ['delete '], clear_all: ['clear'], add_email: ['email '], add_address: ['address']}
+              del_user: ['delete '], clear_all: ['clear'], add_email: ['email '], add_address: ['address'],
+              del_email: ['del email']}
 
 
 def start_ab():
     contacts = AddressBook(filename='contacts.dat')
-    print(f"\033[032m 'Write command 'help' that see commands' \033[0m\n")
+    print('\n\033[033mWelcome to the address book!\033[0m')
+    print(f"\033[032mType command or '?' for help \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass
@@ -441,7 +470,7 @@ Completer = NestedCompleter.from_nested_dict({'help': None, 'hello': None, 'good
                                               'close': None, '?': None, '.': None, 'birthday': None,
                                               'days to birthday': None, 'add': None,
                                               'show': {'all': None, 'birthday days': None},
-                                              'change': None, 'del': None, 'delete': None,
+                                              'change': None, 'del': {'phone': None, 'email': None}, 'delete': None,
                                               'clear': None, 'email': None, 'find': None, 'search': None,
                                               'address': None})
 
