@@ -132,8 +132,8 @@ class Record:
     def __str__(self) -> str:
         return f' User \033[35m{self.name.value:20}\033[0m - Birthday {self.birthday}\n' \
                f'     Phones: {", ".join([phone.value for phone in self.phone_list])}\n' \
-               f' Email: {self.email}\n' \
-               f' Address: {self.address}'
+               f'     Email: {self.email}\n' \
+               f'     Address: {self.address}'
 
     def add_phone(self, phone: Phone) -> None:
         self.phone_list.append(phone)
@@ -172,15 +172,20 @@ class AddressBook(UserDict):
 
     def iterator(self, func=None, days=0):
         index, print_block = 1, '-' * 50 + '\n'
+        is_empty = True
         for record in self.data.values():
             if func is None or func(record):
+                is_empty = False
                 print_block += str(record) + '\n'
                 if index < N:
                     index += 1
                 else:
                     yield print_block
                     index, print_block = 1, '-' * 50 + '\n'
-        yield print_block
+        if is_empty:
+            yield None
+        else:
+            yield print_block
 
 
 class PhoneUserAlreadyExists(Exception):
@@ -284,7 +289,10 @@ def show_all(contacts, *args):
     result = 'List of all users:\n'
     print_list = contacts.iterator()
     for item in print_list:
-        result += f'{item}'
+        if item is None:
+            return 'Address book is empty'
+        else:
+            result += f'{item}'
     return result
 
 
@@ -332,7 +340,10 @@ def search(contacts, *args):
         result = f'List of users with \'{substring.lower()}\' in data:\n'
         print_list = contacts.iterator(func_sub)
         for item in print_list:
-            result += f'{item}'
+            if item is None:
+                return f'Users with \'{substring.lower()}\' in data not found'
+            else:
+                result += f'{item}'
         return result
     else:
         raise FindNotFound
