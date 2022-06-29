@@ -35,6 +35,6 @@
 ---
 ### Ліцензія
 
-![GitHub](https://img.shields.io/github/license/LeadShadow/CW-Console-Bot)
+[![GitHub](https://img.shields.io/github/license/LeadShadow/CW-Console-Bot)](https://github.com/LeadShadow/CW-Console-Bot/blob/main/LICENSE)
 
 Цей проєкт ліцензується відповідно до ліцензії MIT — подробиці див. у файлі [LICENSE](https://github.com/LeadShadow/CW-Console-Bot/blob/main/LICENSE) 
