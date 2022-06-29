@@ -27,8 +27,6 @@ class InputError:
     def __call__(self, contacts, *args):
         try:
             return self.func(contacts, *args)
-        # except IndexError:
-        #     return 'Error! Give me name and phone or birthday please!'
         except KeyError:
             return 'Error! Note not found!'
         except ValueError:
@@ -186,33 +184,6 @@ class NoteBook(UserDict):
         else:
             yield print_block
 
-    # def iterator_sort(self, func=None):
-    #     sort_keys = []
-    #     for v in self.data.values():
-    #         if v.tags and v.tags[0].lower() not in sort_keys:
-    #             sort_keys.append(v.tags[0].lower())
-    #     index, print_block = 1, '=' * 50 + '\n'
-    #     for key in sorted(sort_keys):
-    #         for note in self.data.values():
-    #             if func is None or func(note):
-    #                 if note.tags and note.tags[0].lower() == key:
-    #                     print_block += str(note) + '\n' + '-' * 50 + '\n'
-    #                     if index < N:
-    #                         index += 1
-    #                     else:
-    #                         yield print_block
-    #                         index, print_block = 1, '=' * 50 + '\n'
-    #     for note in self.data.values():
-    #         if func is None or func(note):
-    #             if not note.tags:
-    #                 print_block += str(note) + '\n' + '-' * 50 + '\n'
-    #                 if index < N:
-    #                     index += 1
-    #                 else:
-    #                     yield print_block
-    #                     index, print_block = 1, '=' * 50 + '\n'
-    #     yield print_block
-
 
 @InputError
 def add_note(notebook, *args):
@@ -256,10 +227,6 @@ def show_all(notebook, tag_sorted=False, *args):
 
     result = 'List of all notes:\n'
     print_list = notebook.iterator(filter_func, tag_sorted)
-    # if tag_sorted:
-    #     print_list = notebook.iterator_sort(filter_func)
-    # else:
-    #     print_list = notebook.iterator(filter_func)
     for item in print_list:
         if item is None:
             return 'No notes found'
@@ -366,7 +333,6 @@ def add_tag(notebook, *args):
 def find_tag(notebook, *args):
     """Повертає нотатки в яких є тег"""
     def filter_func(note):
-        # return [t.lower() for t in note.tags if t == tag.lower()]
         return tag.lower() in [t.lower() for t in note.tags]
     tag = args[0]
     result = f'List of notes with tag "{tag}":\n'
@@ -433,7 +399,7 @@ def command_parser(user_command: str) -> (str, list):
 def start_nb():
     notebook = NoteBook(filename='notes.dat')
     print('\n\033[033mWelcome to notebook!\033[0m')
-    print(f"\033[032mType command or '?' for help \033[0m\n")
+    print(f"\033[032mType command 'help' or '?' for help \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass
