@@ -118,7 +118,7 @@ COMMANDS_F = {file_parser: ['parse '], help_me: ['?', 'help'], goodbye: ['good b
 
 def start_fp():
     print('\n\033[033mWelcome to file parser!\033[0m')
-    print(f"\033[032mType command or '?' for help \033[0m\n")
+    print(f"\033[032mType command 'help' or '?' for help \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass
