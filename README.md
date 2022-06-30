@@ -8,21 +8,40 @@
 ![GitHub Release Date](https://img.shields.io/badge/release--date-june-orange?&style=plastic)
 ![GitHub repo size](https://img.shields.io/badge/repo%20size-115%20kB-pink?&style=plastic)
 ---
-### **Program operation**:
+### Installation
 
-#### **Format start in console:**
-#### *"python main.py"*
-
----
-#### **Supported programs:** adressbook, notebook, file_parser
-
-#### *adressbook* - to add, change, delete, clear adressbook
-#### *notebook* - to add, change, delete, clear notebook
-#### *file_parser* - to sort files with different extensions by folders
+    pip install CW-Core6-consolebot-0.1.0-py3-none-any.whl
 
 ---
-***At the beginning of the program will be menu with choice file which will be work with you***
+### Program operation:
 
-***Next, type 'adressbook' or 'notebook' or 'file_parser' or 'quit' -> finish program***
+#### *Format start in console:*
 
-***Next, type 'help' or '?' that see commands to interact with file which you selected*** 
+    consolebot
+---
+#### *Supported modules:* `adressbook`, `notebook`, `file_parser`
+
+`adressbook` - to add, change, delete, clear adressbook
+
+`notebook` - to add, change, delete, clear notebook
+
+`file_parser` - to sort files with different extensions by folders
+
+---
+At the beginning of the program will be menu with choice file which will be work with you
+
+Next, type `adressbook` or `notebook` or `file_parser` or `quit` - finish program
+
+Next, type command or `?` - that see commands to interact with file which you selected 
+
+---
+### Authors
+[![GitHub Contributors Image](https://contrib.rocks/image?repo=LeadShadow/CW-Console-Bot)](https://github.com/LeadShadow)
+[![GitHub Contributors Image](https://contrib.rocks/image?repo=VlodyaKr/Python-6-Core-HomeWork-12)](https://github.com/VlodyaKr)
+[![GitHub Contributors Image](https://contrib.rocks/image?repo=IrynaKupets/hw12)](https://github.com/IrynaKupets)
+---
+### Ліцензія
+
+[![GitHub](https://img.shields.io/github/license/LeadShadow/CW-Console-Bot)](https://github.com/LeadShadow/CW-Console-Bot/blob/main/LICENSE)
+
+Цей проєкт ліцензується відповідно до ліцензії MIT — подробиці див. у файлі [LICENSE](https://github.com/LeadShadow/CW-Console-Bot/blob/main/LICENSE) 

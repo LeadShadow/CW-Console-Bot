@@ -4,7 +4,7 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import NestedCompleter
 
-from command_parser import RainbowLexer
+from console_bot.command_parser import RainbowLexer
 import datetime
 import pickle
 import re
@@ -27,6 +27,8 @@ class InputError:
     def __call__(self, contacts, *args):
         try:
             return self.func(contacts, *args)
+        # except IndexError:
+        #     return 'Error! Give me name and phone or birthday please!'
         except KeyError:
             return 'Error! Note not found!'
         except ValueError:
@@ -399,7 +401,7 @@ def command_parser(user_command: str) -> (str, list):
 def start_nb():
     notebook = NoteBook(filename='notes.dat')
     print('\n\033[033mWelcome to notebook!\033[0m')
-    print(f"\033[032mType command 'help' or '?' for help \033[0m\n")
+    print(f"\033[032mType command or '?' for help \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass
