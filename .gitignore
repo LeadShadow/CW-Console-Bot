@@ -128,8 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea/
-.CW/
 test.py
 notes.dat
 contacts.dat
 history.txt
+.CW/

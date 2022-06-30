@@ -3,12 +3,12 @@ from prompt_toolkit import prompt
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import NestedCompleter
-from command_parser import RainbowLexer
+from console_bot.command_parser import RainbowLexer
 
 import shutil
-from fp.parser import *
-from fp.normalize import normalize
-from command_parser import command_parser
+from console_bot.parser import *
+from console_bot.normalize import normalize
+from console_bot.command_parser import command_parser
 
 
 def help_me(*args):
@@ -118,7 +118,7 @@ COMMANDS_F = {file_parser: ['parse '], help_me: ['?', 'help'], goodbye: ['good b
 
 def start_fp():
     print('\n\033[033mWelcome to file parser!\033[0m')
-    print(f"\033[032mType command 'help' or '?' for help \033[0m\n")
+    print(f"\033[032mType command or '?' for help \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass

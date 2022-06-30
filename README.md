@@ -10,8 +10,9 @@
 ---
 ### **Program operation**:
 
+#### **That start program type: pip install CW-Core6-consolebot-0.1.0-py3-none-any.whl**
 #### **Format start in console:**
-#### *"python main.py"*
+#### *"consolebot"*
 
 ---
 #### **Supported programs:** adressbook, notebook, file_parser
@@ -26,3 +27,15 @@
 ***Next, type 'adressbook' or 'notebook' or 'file_parser' or 'quit' -> finish program***
 
 ***Next, type 'help' or '?' that see commands to interact with file which you selected*** 
+
+---
+### **Authors**
+[![GitHub Contributors Image](https://contrib.rocks/image?repo=LeadShadow/CW-Console-Bot)](https://github.com/LeadShadow)
+[![GitHub Contributors Image](https://contrib.rocks/image?repo=VlodyaKr/Python-6-Core-HomeWork-12)](https://github.com/VlodyaKr)
+[![GitHub Contributors Image](https://contrib.rocks/image?repo=IrynaKupets/hw12)](https://github.com/IrynaKupets)
+---
+### Ліцензія
+
+[![GitHub](https://img.shields.io/github/license/LeadShadow/CW-Console-Bot)](https://github.com/LeadShadow/CW-Console-Bot/blob/main/LICENSE)
+
+Цей проєкт ліцензується відповідно до ліцензії MIT — подробиці див. у файлі [LICENSE](https://github.com/LeadShadow/CW-Console-Bot/blob/main/LICENSE) 

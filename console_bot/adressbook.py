@@ -2,7 +2,6 @@ from prompt_toolkit import prompt
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import NestedCompleter
-from command_parser import RainbowLexer
 import datetime
 import pickle
 from pathlib import Path
@@ -11,9 +10,7 @@ from datetime import date
 import colorama
 import re
 
-from pygments.lexers import SqlLexer
-
-from command_parser import command_parser
+from console_bot.command_parser import command_parser, RainbowLexer
 
 N = 3  # кількість записів для представлення телефонної книги
 
@@ -449,7 +446,7 @@ COMMANDS_A = {salute: ['hello'], add_contact: ['add '], change_contact: ['change
 def start_ab():
     contacts = AddressBook(filename='contacts.dat')
     print('\n\033[033mWelcome to the address book!\033[0m')
-    print(f"\033[032mType command 'help' or '?' for help \033[0m\n")
+    print(f"\033[032mType command or '?' for help \033[0m\n")
     while True:
         with open("history.txt", "wb"):
             pass
